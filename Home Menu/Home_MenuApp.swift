@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
-import FirebaseCore
+import Firebase
 
 @main
 struct Home_MenuApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     init() {
-        FirebaseBootstrap.configure()
+        FirebaseApp.configure()
     }
     
     var body: some Scene {
