@@ -23,16 +23,23 @@ struct LoginView: View {
                         .padding(.horizontal)
                         .textInputAutocapitalization(.never)
                 }
+                    
+                HStack {
+                    Image(systemName: "envelope")
+                    TextField("Email", text: $email)
+                        .textFieldStyle(.roundedBorder)
+                    
+                        .textInputAutocapitalization(.never)
+                        .keyboardType(.emailAddress)
+                }
+                .padding(.horizontal)
                 
-                TextField("Email", text: $email)
-                    .textFieldStyle(.roundedBorder)
-                    .padding(.horizontal)
-                    .textInputAutocapitalization(.never)
-                    //.keyboardType(.emailAddress)
+                HStack {
+                    Image(systemName: "key.horizontal")
+                    SecureFieldView(text: $password)
+                }
+                .padding(.horizontal)
                 
-                SecureField("Password", text: $password)
-                    .textFieldStyle(.roundedBorder)
-                    .padding(.horizontal)
                 
                 Button(action: submit) {
                     Text(isRegistering ? "Register" : "Sign In")
