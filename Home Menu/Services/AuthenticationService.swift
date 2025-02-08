@@ -1,4 +1,4 @@
-import Foundation
+import FirebaseCore
 import FirebaseAuth
 import FirebaseFirestore
 
@@ -31,25 +31,42 @@ class AuthenticationService: ObservableObject {
     }
     
     func signUp(username: String, email: String, password: String) async throws {
-        // First create the auth user
-        print("I am signing up now!")
-        let result = try await Auth.auth().createUser(withEmail: email, password: password)
-        
-        print("I am signing up now!")
-        print(result)
-        
-        // Then create our app user
-        let newUser = User(
-            id: result.user.uid,
-            username: username,
-            email: email
-        )
-        
-        // Store user data in Firestore
-        try await storeUserData(newUser)
-        
-        // Update the current user
-        self.currentUser = newUser
+        do {
+            print("Starting user creation process...")
+            // First create the auth user
+            let result = try await Auth.auth().createUser(withEmail: email, password: password)
+            print("Firebase Auth user created successfully: \(result.user.uid)")
+            
+            // Then create our app user
+            let newUser = User(
+                id: result.user.uid,
+                username: username,
+                email: email
+            )
+            
+            print("Storing user data in Firestore...")
+            // Store user data in Firestore
+            try await storeUserData(newUser)
+            print("User data stored successfully")
+            
+            // Update the current user
+            self.currentUser = newUser
+        } catch {
+            print("Error during sign up: \(error.localizedDescription)")
+            if let authError = error as? AuthErrorCode {
+                switch authError.code {
+                case .emailAlreadyInUse:
+                    throw AuthError.emailAlreadyInUse
+                case .invalidEmail:
+                    throw AuthError.invalidEmail
+                case .weakPassword:
+                    throw AuthError.weakPassword
+                default:
+                    throw AuthError.unknown(error.localizedDescription)
+                }
+            }
+            throw error
+        }
     }
     
     func signOut() throws {
@@ -80,11 +97,23 @@ class AuthenticationService: ObservableObject {
 
 enum AuthError: LocalizedError {
     case userNotFound
+    case emailAlreadyInUse
+    case invalidEmail
+    case weakPassword
+    case unknown(String)
     
     var errorDescription: String? {
         switch self {
         case .userNotFound:
             return "User not found"
+        case .emailAlreadyInUse:
+            return "Email is already in use"
+        case .invalidEmail:
+            return "Invalid email format"
+        case .weakPassword:
+            return "Password is too weak"
+        case .unknown(let message):
+            return "Authentication error: \(message)"
         }
     }
 } 

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Firebase
+import FirebaseCore
 
 @main
 struct Home_MenuApp: App {

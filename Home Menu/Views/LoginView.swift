@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 struct LoginView: View {
     @EnvironmentObject var authService: AuthenticationService
@@ -69,6 +68,11 @@ struct LoginView: View {
                 
                 Spacer()
             }
+            .alert("Error", isPresented: $showError) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(errorMessage)
+            }
         }
     
         private var isValid: Bool {
@@ -89,21 +93,29 @@ struct LoginView: View {
             Task {
                 do {
                     if isRegistering {
-                        print("I am trying to call the regisfunction")
+                        print("Starting registration process...")
                         try await authService.signUp(
                             username: username,
                             email: email,
                             password: password
                         )
+                        print("Registration completed successfully")
                     } else {
+                        print("Starting sign in process...")
                         try await authService.signIn(
                             email: email,
                             password: password
                         )
+                        print("Sign in completed successfully")
                     }
+                } catch let error as AuthError {
+                    errorMessage = error.errorDescription ?? "An unknown error occurred"
+                    showError = true
+                    print("Auth error: \(errorMessage)")
                 } catch {
                     errorMessage = error.localizedDescription
                     showError = true
+                    print("General error: \(error)")
                 }
             }
         }
