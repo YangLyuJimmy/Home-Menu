@@ -6,9 +6,14 @@
 //
 
 import SwiftUI
+import FirebaseCore
 
 @main
 struct Home_MenuApp: App {
+    init() {
+        FirebaseBootstrap.configure()
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
