@@ -32,7 +32,11 @@ class AuthenticationService: ObservableObject {
     
     func signUp(username: String, email: String, password: String) async throws {
         // First create the auth user
+        print("I am signing up now!")
         let result = try await Auth.auth().createUser(withEmail: email, password: password)
+        
+        print("I am signing up now!")
+        print(result)
         
         // Then create our app user
         let newUser = User(

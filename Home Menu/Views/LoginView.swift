@@ -18,17 +18,20 @@ struct LoginView: View {
                     .padding(.top, 40)
                 
                 if isRegistering {
-                    TextField("Username", text: $username)
-                        .textFieldStyle(.roundedBorder)
-                        .padding(.horizontal)
-                        .textInputAutocapitalization(.never)
+                    HStack {
+                        Image(systemName: "person.fill.viewfinder")
+                            .padding(.horizontal, 1)
+                        TextField("Username", text: $username)
+                            .textFieldStyle(.roundedBorder)
+                            .textInputAutocapitalization(.never)
+                    }
+                    .padding(.horizontal)
                 }
                     
                 HStack {
                     Image(systemName: "envelope")
                     TextField("Email", text: $email)
                         .textFieldStyle(.roundedBorder)
-                    
                         .textInputAutocapitalization(.never)
                         .keyboardType(.emailAddress)
                 }
@@ -86,6 +89,7 @@ struct LoginView: View {
             Task {
                 do {
                     if isRegistering {
+                        print("I am trying to call the regisfunction")
                         try await authService.signUp(
                             username: username,
                             email: email,
