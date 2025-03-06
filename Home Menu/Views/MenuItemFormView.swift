@@ -112,4 +112,8 @@ struct MenuItemFormView: View {
             menuManager.addItem(newItem)
         }
     }
+}
+
+#Preview {
+    MenuItemFormView(menuManager: MenuManager())
 } 
